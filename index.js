@@ -106,7 +106,7 @@ var compile = function(schema, cache, root, reporter, opts) {
     return v
   }
 
-  var visit = function(name, node, reporter) {
+  var visit = function(name, node, reporter, noFilter) {
     var properties = node.properties
     var type = node.type
     var tuple = false
@@ -266,12 +266,15 @@ var compile = function(schema, cache, root, reporter, opts) {
           ('if (%s) {', additionalProp)
 
       if (node.additionalProperties === false) {
-	      validate
-	        ('if(options.filter) {')
-	          ('delete %s', name+'['+keys+'['+i+']]')
-	        ('} else {')
-	      error('has additional properties')
-	      validate('}')
+        if(!noFilter) {
+          validate('if(options.filter) {')
+            ('delete %s', name + '[' + keys + '[' + i + ']]')
+          ('} else {')
+          error('has additional properties')
+          validate('}')
+        } else {
+          error('has additional properties')
+        }
       } else {
         visit(name+'['+keys+'['+i+']]', node.additionalProperties, reporter)
       }
@@ -386,10 +389,12 @@ var compile = function(schema, cache, root, reporter, opts) {
         ('var %s = 0', passes)
 
       node.oneOf.forEach(function(sch, i) {
-        visit(name, sch, false)
-        validate('if (%s === errors) {', prev)
+        visit(name, sch, false, true)
+        validate
+        ('if (%s === errors) {', prev)
           ('%s++', passes)
-        ('} else {')
+          visit(name, sch, false, false)
+        validate('} else {')
           ('errors = %s', prev)
         ('}')
       })
@@ -499,7 +504,7 @@ var compile = function(schema, cache, root, reporter, opts) {
       ('var errors = 0')
       ('options = options || {}')
 
-	visit('data', schema, reporter)
+  visit('data', schema, reporter)
 
   validate
       ('return errors === 0')
