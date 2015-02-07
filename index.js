@@ -266,7 +266,12 @@ var compile = function(schema, cache, root, reporter, opts) {
           ('if (%s) {', additionalProp)
 
       if (node.additionalProperties === false) {
-        error('has additional properties')
+	      validate
+	        ('if(options.filter) {')
+	          ('delete %s', name+'['+keys+'['+i+']]')
+	        ('} else {')
+	      error('has additional properties')
+	      validate('}')
       } else {
         visit(name+'['+keys+'['+i+']]', node.additionalProperties, reporter)
       }
@@ -489,11 +494,12 @@ var compile = function(schema, cache, root, reporter, opts) {
   }
 
   var validate = genfun
-    ('function validate(data) {')
+    ('function validate(data, options) {')
       ('validate.errors = null')
       ('var errors = 0')
+      ('options = options || {}')
 
-  visit('data', schema, reporter)
+	visit('data', schema, reporter)
 
   validate
       ('return errors === 0')
