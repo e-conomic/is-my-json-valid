@@ -390,14 +390,14 @@ var compile = function(schema, cache, root, reporter, opts) {
 
       node.oneOf.forEach(function(sch, i) {
         visit(name, sch, false, false)
-	      validate('if (%s === errors) {', prev)
-	      ('%s++', passes)
-	      ('} else {')
-	      ('errors = %s', prev)
-	      ('}')
+        validate('if (%s === errors) {', prev)
+          ('%s++', passes)
+        ('} else {')
+          ('errors = %s', prev)
+        ('}')
       })
 
-	    validate('if (%s !== 1) {', passes)
+      validate('if (%s !== 1) {', passes)
       error('no (or more than one) schemas match')
       validate('}')
     }
