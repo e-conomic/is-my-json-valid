@@ -157,7 +157,7 @@ tape('oneOf filter - no schema matching', function (t) {
   var doc = {hello: 'world', hello2: 'world2'}
 
   t.notOk(validate(doc, {filter: true}), 'should be invalid')
-  t.deepEqual(doc, {hello: 'world', hello2: 'world2'}, 'should not remove property in the oneOf schema that matches')
+  t.deepEqual(doc, {hello: 'world', hello2: 'world2'}, 'should not remove property')
   t.end()
 })
 
@@ -248,6 +248,6 @@ tape('anyOf filter - no schema matching', function (t) {
   var doc = {hello: 'world', hello2: 'world2'}
 
   t.notOk(validate(doc, {filter: true}), 'should be invalid')
-  t.deepEqual(doc, {hello: 'world', hello2: 'world2'}, 'should not remove property in the anyOf schema that matches')
+  t.deepEqual(doc, {hello: 'world', hello2: 'world2'}, 'should not remove property')
   t.end()
 })
