@@ -14,7 +14,7 @@ tape('not passing filter to schema compiler', function (t) {
   var validate = validator(schema, {filter: true})
   var doc = {hello: 'world', notInSchema: true}
 
-  t.notOk(validate(doc))
+  t.notOk(validate(doc), 'should be invalid')
   t.deepEqual(doc, {hello: 'world', notInSchema: true}, 'leave property not in schema')
   t.end()
 })
@@ -32,7 +32,7 @@ tape('simple filter', function (t) {
   var validate = validator(schema, {filter: true})
   var doc = {hello: 'world', removeThis: true}
 
-  t.ok(validate(doc, {filter: true}), 'should be valid')
+  t.notOk(validate(doc, {filter: true}), 'should be invalid')
   t.deepEqual(doc, {hello: 'world'}, 'remove property not in schema')
   t.end()
 })
@@ -63,7 +63,7 @@ tape('allOf filter - second schema matching', function (t) {
   var validate = validator(schema, {filter: true})
   var doc = {hello: 'world', hello2: 'world2'}
 
-  t.ok(validate(doc, {filter: true}), 'should be valid')
+  t.notOk(validate(doc, {filter: true}), 'should be invalid')
   t.deepEqual(doc, {hello: 'world'}, 'should remove property')
   t.end()
 })

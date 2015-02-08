@@ -269,9 +269,8 @@ var compile = function(schema, cache, root, reporter, opts) {
         if(filter) {
           validate('if(filter) {')
             ('delete %s', name+'['+keys+'['+i+']]')
-          ('} else {')
+          ('}')
           error('has additional properties')
-          validate('}')
         } else {
           error('has additional properties')
         }
