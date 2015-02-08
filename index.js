@@ -500,7 +500,9 @@ var compile = function(schema, cache, root, reporter, opts) {
     ('function validate(data, opts) {')
       ('validate.errors = null')
       ('var errors = 0')
-      ('var filter = opts && opts.filter')
+  if(opts && opts.filter) {
+    validate('var filter = opts && opts.filter')
+  }
 
   visit('data', schema, reporter, opts && opts.filter)
 
