@@ -71,7 +71,7 @@ console.log(validate('ab')) // false
 ```
 
 ## Filtering away additional properties
-is-my-json-valid supports filtering away properties not in the schema, instead of returning an error
+is-my-json-valid supports filtering away properties not in the schema
 ``` js
 var validate = validator({
   required: true,
