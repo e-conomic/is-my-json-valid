@@ -1,7 +1,7 @@
 var tape = require('tape')
 var validator = require('../')
 
-tape('not passing filter to schema compiler', function (t) {
+tape('not passing filter:true to schema compiler', function (t) {
   var schema = {
     required: true,
     type: 'object',
