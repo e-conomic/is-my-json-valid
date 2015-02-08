@@ -268,7 +268,7 @@ var compile = function(schema, cache, root, reporter, opts) {
       if (node.additionalProperties === false) {
         if(filter) {
           validate('if(options.filter) {')
-            ('delete %s', name + '[' + keys + '[' + i + ']]')
+            ('delete %s', name+'['+keys+'['+i+']]')
           ('} else {')
           error('has additional properties')
           validate('}')
