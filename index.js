@@ -368,7 +368,7 @@ var compile = function(schema, cache, root, reporter, opts) {
           validate('var %s = errors', prev)
         } else {          
           validate('if (errors !== %s) {', prev)
-	        ('errors = %s', prev)
+            ('errors = %s', prev)
         }
         visit(name, sch, false, false)
       })
