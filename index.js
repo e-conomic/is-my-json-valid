@@ -267,7 +267,7 @@ var compile = function(schema, cache, root, reporter, opts) {
 
       if (node.additionalProperties === false) {
         if(filter) {
-          validate('if(options.filter) {')
+          validate('if(filter) {')
             ('delete %s', name+'['+keys+'['+i+']]')
           ('} else {')
           error('has additional properties')
@@ -497,10 +497,10 @@ var compile = function(schema, cache, root, reporter, opts) {
   }
 
   var validate = genfun
-    ('function validate(data, options) {')
+    ('function validate(data, opts) {')
       ('validate.errors = null')
       ('var errors = 0')
-      ('options = options || {}')
+      ('var filter = opts && opts.filter')
 
   visit('data', schema, reporter, opts && opts.filter)
 
