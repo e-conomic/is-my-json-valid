@@ -70,6 +70,26 @@ console.log(validate('aa')) // true
 console.log(validate('ab')) // false
 ```
 
+## Filtering away additional properties
+is-my-json-valid supports filtering away properties not in the schema, instead of returning an error
+``` js
+var validate = validator({
+  required: true,
+  type: 'object',
+  properties: {
+    hello: {type: 'string', required: true}
+  },
+  additionalProperties: false
+}, {
+  filter: true
+})
+
+var doc = {hello: 'world', notInSchema: true}
+
+console.log(validate(doc, {filter:true})) // true
+console.log(doc) // {hello: 'world'}
+```
+
 ## Performance
 
 is-my-json-valid uses code generation to turn your JSON schema into basic javascript code that is easily optimizeable by v8.
