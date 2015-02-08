@@ -270,10 +270,8 @@ var compile = function(schema, cache, root, reporter, opts) {
           validate('if(filter) {')
             ('delete %s', name+'['+keys+'['+i+']]')
           ('}')
-          error('has additional properties')
-        } else {
-          error('has additional properties')
         }
+        error('has additional properties')
       } else {
         visit(name+'['+keys+'['+i+']]', node.additionalProperties, reporter, filter)
       }
