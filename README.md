@@ -86,7 +86,7 @@ var validate = validator({
 
 var doc = {hello: 'world', notInSchema: true}
 
-console.log(validate(doc, {filter:true})) // true
+console.log(validate(doc, {filter:true})) // false
 console.log(doc) // {hello: 'world'}
 ```
 
