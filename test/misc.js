@@ -201,3 +201,45 @@ tape('#toJSON()', function(t) {
   t.deepEqual(validate.toJSON(), schema, 'should return original schema')
   t.end()
 })
+
+tape('external schemas', function(t) {
+  var ext = {type: 'string'}
+  var schema = {
+    required: true,
+    $ref: '#ext'
+  }
+
+  var validate = validator(schema, {schemas: {ext:ext}})
+
+  t.ok(validate('hello string'), 'is a string')
+  t.notOk(validate(42), 'not a string')
+  t.end()
+})
+
+tape('nested required array decl', function(t) {
+  var schema = {
+    properties: {
+      x: {
+        type: 'object',
+        properties: {
+          y: {
+            type: 'object',
+            properties: {
+              z: {
+                type: 'string'
+              }
+            },
+            required: ['z']
+          }
+        }
+      }
+    },
+    required: ['x']
+  }
+
+  var validate = validator(schema)
+
+  t.ok(validate({x: {}}), 'should be valid')
+  t.notOk(validate({}), 'should not be valid')
+  t.end()
+})

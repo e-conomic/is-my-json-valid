@@ -4,7 +4,7 @@ var jsonpointer = require('jsonpointer')
 var xtend = require('xtend')
 var formats = require('./formats')
 
-var get = function(obj, ptr) {
+var get = function(obj, additionalSchemas, ptr) {
   if (/^https?:\/\//.test(ptr)) return null
 
   var visit = function(sub) {
@@ -24,7 +24,8 @@ var get = function(obj, ptr) {
   try {
     return jsonpointer.get(obj, decodeURI(ptr))
   } catch (err) {
-    return null
+    var other = additionalSchemas[ptr] || additionalSchemas[ptr.replace(/^#/, '')]
+    return other || null
   }
 }
 
@@ -140,16 +141,6 @@ var compile = function(schema, cache, root, reporter, opts) {
       validate('if (%s === undefined) {', name)
       error('is required')
       validate('} else {')
-    } else if (node.required) {
-      indent++
-
-      var isUndefined = function(req) {
-        return genobj(name, req) + ' === undefined'
-      }
-
-      validate('if (%s) {', node.required.map(isUndefined).join(' || ') || 'false')
-      error('missing required properties')
-      validate('} else {')
     } else {
       indent++
       validate('if (%s !== undefined) {', name)
@@ -189,6 +180,17 @@ var compile = function(schema, cache, root, reporter, opts) {
       else validate('if (!%s.test(%s)) {', n, name)
       error('must be '+node.format+' format')
       validate('}')
+    }
+
+    if (Array.isArray(node.required)) {
+      var isUndefined = function(req) {
+        return genobj(name, req) + ' === undefined'
+      }
+
+      validate('if ((%s) && (%s)) {', type !== 'object' ? types.object(name) : 'true', node.required.map(isUndefined).join(' || ') || 'false')
+      error('missing required properties')
+      validate('} else {')
+      indent++
     }
 
     if (node.uniqueItems) {
@@ -284,7 +286,7 @@ var compile = function(schema, cache, root, reporter, opts) {
     }
 
     if (node.$ref) {
-      var sub = get(root, node.$ref)
+      var sub = get(root, opts && opts.schemas || {}, node.$ref)
       if (sub) {
         var fn = cache[node.$ref]
         if (!fn) {
