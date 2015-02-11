@@ -70,6 +70,47 @@ console.log(validate('aa')) // true
 console.log(validate('ab')) // false
 ```
 
+## External schemas
+
+You can pass in external schemas that you reference using the `$ref` attribute as the `schemas` option
+
+``` js
+var ext = {
+  required: true,
+  type: 'string'
+}
+
+var schema = {
+  $ref: '#ext' // references another schema called ext
+}
+
+// pass the external schemas as an option
+var validate = validate(schema, {schemas: {ext: ext}})
+
+validate('hello') // returns true
+validate(42) // return false
+```
+
+## Filtering away additional properties
+is-my-json-valid supports filtering away properties not in the schema
+``` js
+var validate = validator({
+  required: true,
+  type: 'object',
+  properties: {
+    hello: {type: 'string', required: true}
+  },
+  additionalProperties: false
+}, {
+  filter: true
+})
+
+var doc = {hello: 'world', notInSchema: true}
+
+console.log(validate(doc, {filter:true})) // false
+console.log(doc) // {hello: 'world'}
+```
+
 ## Performance
 
 is-my-json-valid uses code generation to turn your JSON schema into basic javascript code that is easily optimizeable by v8.
